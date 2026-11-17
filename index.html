@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI 芯片/算力出口合规与供应链风险预警平台</title>
+<meta name="description" content="AI 芯片出口合规评估：政策库、芯片风险评分、供应链节点风险、合规报告生成">
+<style>
+:root{--bg:#0b0f1a;--card:#14192b;--card2:#1c2340;--line:#2a3155;--ink:#e8ecf7;--muted:#9aa3c4;--accent:#6366f1;--accent2:#ec4899;--good:#22c55e;--warn:#f59e0b;--bad:#ef4444;--grad:linear-gradient(135deg,#6366f1,#ec4899)}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans SC",sans-serif;background:var(--bg);color:var(--ink)}
+.container{max-width:1180px;margin:0 auto;padding:20px 18px 60px}
+header{background:var(--grad);border-radius:16px;padding:26px 24px;margin-bottom:18px}
+header h1{margin:0 0 6px;font-size:26px}
+header p{margin:0;opacity:.92;font-size:14px}
+.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;background:rgba(255,255,255,.2);margin-right:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+.card h2{font-size:18px;margin:0 0 12px;color:#c7caff}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#10152a;color:var(--ink);font-size:14px;font-family:inherit}
+.btn{padding:10px 18px;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;background:var(--accent);color:#fff;transition:.15s}
+.btn:hover{filter:brightness(1.12)}
+.btn.ghost{background:var(--card2);color:#c7caff;border:1px solid var(--line)}
+.btn.sm{padding:6px 12px;font-size:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.metric{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.metric .v{font-size:24px;font-weight:700;color:#fff;display:block}
+.metric .l{font-size:12px;color:var(--muted)}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;margin-right:6px}
+.pill.high{background:rgba(239,68,68,.16);color:#ff9c9c}
+.pill.mid{background:rgba(245,158,11,.16);color:#fcd34d}
+.pill.low{background:rgba(34,197,94,.16);color:#7ee2a8}
+.pill.neu{background:rgba(148,163,184,.16);color:#cbd5e1}
+.chip-card{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px;cursor:pointer;transition:.15s}
+.chip-card:hover{border-color:var(--accent)}
+.chip-card.active{border-color:var(--accent);background:rgba(99,102,241,.12)}
+.tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;background:rgba(99,102,241,.18);color:#c7caff;margin-right:4px;margin-top:4px}
+.hidden{display:none}
+.tabbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab{padding:8px 14px;border-radius:10px;background:var(--card2);border:1px solid var(--line);cursor:pointer;font-size:13px;color:var(--muted)}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.timeline .tl-item{border-left:2px solid var(--accent);padding:8px 12px;margin-bottom:10px;background:var(--card2);border-radius:0 8px 8px 0}
+.timeline .date{font-size:12px;color:var(--muted)}
+.timeline .title{font-weight:600;margin:2px 0}
+.timeline .meta{font-size:12px;color:var(--muted)}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);font-size:13px;text-align:left}
+th{color:var(--muted);font-weight:600}
+.hint{color:var(--muted);font-size:13px}
+footer{color:var(--muted);font-size:12px;text-align:center;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>AI 芯片/算力出口合规与供应链风险预警平台</h1>
+  <p>政策库 · 芯片评估 · 供应链风险 · 合规报告 · 追踪记录</p>
+  <div style="margin-top:8px"><span class="badge">8 条政策</span><span class="badge">8 款芯片</span><span class="badge">13 个节点</span></div>
+</header>
+
+<div class="tabbar">
+  <div class="tab active" data-tab="assess">芯片评估</div>
+  <div class="tab" data-tab="policy">政策库</div>
+  <div class="tab" data-tab="supply">供应链</div>
+  <div class="tab" data-tab="report">报告生成</div>
+  <div class="tab" data-tab="track">追踪记录</div>
+</div>
+
+<section id="tab-assess">
+  <div class="card">
+    <h2>芯片出口合规评估</h2>
+    <div class="grid g3">
+      <div><label>选择芯片</label><select id="chipSelect"></select></div>
+      <div><label>目的国/地区</label><select id="destSelect">
+        <option value="中国">中国</option><option value="美国">美国</option><option value="欧盟">欧盟</option><option value="日本">日本</option><option value="台湾">台湾</option><option value="韩国">韩国</option><option value="俄罗斯">俄罗斯</option>
+      </select></div>
+      <div><label>最终用途</label><input id="useCase" placeholder="如：AI 训练、推理服务、军事"></div>
+    </div>
+    <div class="row"><button class="btn" onclick="doAssess()">评估</button><button class="btn ghost" onclick="saveAssess()">记录追踪</button></div>
+    <div id="assessBox" style="margin-top:14px"></div>
+  </div>
+  <div class="card">
+    <h2>芯片库</h2>
+    <input id="chipSearch" placeholder="搜索芯片..." oninput="renderChips()" style="margin-bottom:10px">
+    <div class="grid g3" id="chipGrid"></div>
+  </div>
+</section>
+
+<section id="tab-policy" class="hidden">
+  <div class="card">
+    <h2>出口管制政策库</h2>
+    <input id="policySearch" placeholder="搜索政策..." oninput="renderPolicies()" style="margin-bottom:10px">
+    <div id="policyBox"></div>
+  </div>
+</section>
+
+<section id="tab-supply" class="hidden">
+  <div class="card">
+    <h2>供应链节点风险评估</h2>
+    <p class="hint">选择节点（可多选），评估整体供应链风险。</p>
+    <div id="nodeBox" style="margin-bottom:12px"></div>
+    <div class="row"><button class="btn" onclick="doSupply()">评估供应链</button></div>
+    <div id="supplyBox" style="margin-top:14px"></div>
+  </div>
+</section>
+
+<section id="tab-report" class="hidden">
+  <div class="card">
+    <h2>合规报告生成</h2>
+    <div class="grid g3">
+      <div><label>芯片</label><select id="repChip"></select></div>
+      <div><label>目的国</label><select id="repDest">
+        <option value="中国">中国</option><option value="美国">美国</option><option value="欧盟">欧盟</option><option value="日本">日本</option><option value="台湾">台湾</option><option value="韩国">韩国</option><option value="俄罗斯">俄罗斯</option>
+      </select></div>
+      <div><label>最终用途</label><input id="repUse" placeholder="如：AI 训练"></div>
+    </div>
+    <div class="row"><button class="btn" onclick="genReport()">生成报告</button><button class="btn ghost" onclick="copyReport()">复制</button></div>
+    <pre id="reportBox" style="white-space:pre-wrap;background:var(--card2);padding:14px;border-radius:10px;margin-top:12px;font-size:13px;max-height:480px;overflow:auto"></pre>
+  </div>
+</section>
+
+<section id="tab-track" class="hidden">
+  <div class="card">
+    <h2>追踪记录</h2>
+    <table><thead><tr><th>时间</th><th>芯片</th><th>目的国</th><th>评分</th><th>等级</th><th>备注</th></tr></thead><tbody id="trackBody"></tbody></table>
+  </div>
+</section>
+
+<footer>AI 芯片/算力出口合规与供应链风险预警 · DevBot MVP · 数据保存在浏览器本地（静态模式）或服务器 JSON（Node 模式）</footer>
+</div>
+
+<script src="lib/compliance.js"></script>
+<script>
+const C = window.ChipCompliance;
+let selectedChip = null;
+let currentReport = '';
+
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('section[id^="tab-"]').forEach(x=>x.classList.add('hidden'));
+  t.classList.add('active');
+  document.getElementById('tab-'+t.dataset.tab).classList.remove('hidden');
+  if(t.dataset.tab==='policy') renderPolicies();
+  if(t.dataset.tab==='supply') renderNodes();
+  if(t.dataset.tab==='track') loadTrack();
+}));
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&','<':'<','>':'>','"':'"',"'":'''}[c]));}
+
+function initSelects(){
+  const opts = C.CHIPS.map(c=>'<option value="'+c.id+'">'+esc(c.name)+' · '+esc(c.vendor)+'</option>').join('');
+  ['chipSelect','repChip'].forEach(id=>{const el=document.getElementById(id); if(el) el.innerHTML=opts;});
+  if(document.getElementById('chipSelect')) document.getElementById('chipSelect').value='h100';
+  if(document.getElementById('repChip')) document.getElementById('repChip').value='h100';
+}
+
+function renderChips(){
+  const q = (document.getElementById('chipSearch').value||'');
+  const list = C.searchChips(q);
+  document.getElementById('chipGrid').innerHTML = list.map(c=>{
+    const rc = c.controlled?'var(--bad)':'var(--good)';
+    return '<div class="chip-card'+(selectedChip===c.id?' active':'')+'" onclick="selectChip(\''+c.id+'\')">'+
+      '<div class="name" style="font-weight:600">'+esc(c.name)+'</div>'+
+      '<div class="role" style="font-size:12px;color:var(--muted)">'+esc(c.vendor)+' · '+esc(c.arch)+'</div>'+
+      '<div style="margin-top:6px;font-size:12px">性能 '+c.perf+' TOPS · TDP '+c.tdp+'W</div>'+
+      '<div style="margin-top:6px"><span style="color:'+rc+';font-weight:600;font-size:12px">'+(c.controlled?'受管制':'不受管')+'</span> · '+esc(c.tier)+'层</div>'+
+      '<div style="margin-top:4px">'+esc(c.desc)+'</div></div>';
+  }).join('');
+}
+
+function selectChip(id){
+  selectedChip=id;
+  document.getElementById('chipSelect').value=id;
+  renderChips();
+}
+
+function doAssess(){
+  const chip = document.getElementById('chipSelect').value;
+  const dest = document.getElementById('destSelect').value;
+  const use = document.getElementById('useCase').value.trim();
+  const a = C.assessChip(chip,dest,use);
+  if(!a){document.getElementById('assessBox').innerHTML='<p class="hint">未找到芯片。</p>';return;}
+  const rc = a.level==='高'?'var(--bad)':a.level==='中'?'var(--warn)':'var(--good)';
+  const pc = a.level==='高'?'high':a.level==='中'?'mid':'low';
+  document.getElementById('assessBox').innerHTML=
+    '<div class="grid g4">'+
+    '<div class="metric"><span class="v">'+a.score+'</span><span class="l">风险评分</span></div>'+
+    '<div class="metric"><span class="v" style="color:'+rc+'">'+a.level+'</span><span class="l">风险等级</span></div>'+
+    '<div class="metric"><span class="v" style="font-size:14px">'+esc(a.chip.name)+'</span><span class="l">芯片</span></div>'+
+    '<div class="metric"><span class="v" style="font-size:14px">'+esc(dest)+'</span><span class="l">目的国</span></div></div>'+
+    '<h3 style="margin-top:14px">合规建议</h3><p style="color:'+rc+';font-weight:600">'+esc(a.compliance)+'</p>'+
+    '<h3>风险因素</h3><div>'+a.factors.map(f=>'<span class="tag">'+esc(f)+'</span>').join('')+'</div>'+
+    '<h3>芯片详情</h3><p style="font-size:13px;color:var(--muted)">'+esc(a.chip.desc)+' · 架构 '+esc(a.chip.arch)+' · 性能 '+a.chip.perf+' TOPS · TDP '+a.chip.tdp+'W</p>';
+}
+
+function saveAssess(){
+  const chip = document.getElementById('chipSelect').value;
+  const dest = document.getElementById('destSelect').value;
+  const use = document.getElementById('useCase').value.trim();
+  const note = prompt('追踪备注：') || '';
+  const a = C.assessChip(chip,dest,use);
+  if(!a){alert('芯片不存在');return;}
+  const rec={id:'local-'+Date.now(),ts:new Date().toISOString(),chipId:chip,chipName:a.chip.name,dest,useCase:use,note,snapshot:{score:a.score,level:a.level,compliance:a.compliance},local:true};
+  let list=[];try{list=JSON.parse(localStorage.getItem('cec_tracks')||'[]');}catch(e){}
+  list.unshift(rec);try{localStorage.setItem('cec_tracks',JSON.stringify(list.slice(0,200)));}catch(e){}
+  try{fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chipId:chip,dest,useCase:use,note})}).catch(()=>{});}catch(e){}
+  alert('已记录');loadTrack();
+}
+
+function renderPolicies(){
+  const q = (document.getElementById('policySearch').value||'');
+  const list = C.searchPolicies(q);
+  document.getElementById('policyBox').innerHTML=
+    '<table><thead><tr><th>日期</th><th>签发方</th><th>政策</th><th>范围</th><th>级别</th></tr></thead><tbody>'+
+    list.map(p=>'<tr><td>'+esc(p.date)+'</td><td>'+esc(p.issuer)+'</td><td>'+esc(p.title)+'</td><td>'+esc(p.scope)+'</td><td><span class="pill '+(p.level==='high'?'high':'mid')+'">'+(p.level==='high'?'高':'中')+'</span></td></tr>'+
+    '<tr><td colspan="5" style="font-size:12px;color:var(--muted);padding-top:0">'+esc(p.summary)+'<br><em>'+esc(p.impact)+'</em></td></tr>').join('')+'</tbody></table>';
+}
+
+function renderNodes(){
+  const nodes = C.NODES;
+  document.getElementById('nodeBox').innerHTML = nodes.map(n=>
+    '<label style="display:inline-flex;align-items:center;gap:6px;margin:4px 8px 4px 0;cursor:pointer"><input type="checkbox" value="'+n.id+'"> '+esc(n.name)+' <span style="color:var(--muted);font-size:11px">('+esc(n.type)+')</span></label>').join('');
+}
+
+function doSupply(){
+  const ids = [...document.querySelectorAll('#nodeBox input:checked')].map(x=>x.value);
+  if(!ids.length){alert('请至少选择一个节点');return;}
+  const r = C.assessSupplyChain(ids);
+  const rc = r.level==='高'?'var(--bad)':r.level==='中'?'var(--warn)':'var(--good)';
+  document.getElementById('supplyBox').innerHTML=
+    '<div class="grid g4">'+
+    '<div class="metric"><span class="v">'+r.score+'</span><span class="l">风险评分</span></div>'+
+    '<div class="metric"><span class="v" style="color:'+rc+'">'+r.level+'</span><span class="l">风险等级</span></div>'+
+    '<div class="metric"><span class="v">'+r.highRiskCount+'</span><span class="l">高风险节点</span></div>'+
+    '<div class="metric"><span class="v">'+r.nodes.length+'</span><span class="l">节点总数</span></div></div>'+
+    '<h3 style="margin-top:14px">节点列表</h3><div>'+r.nodes.map(n=>'<span class="tag">'+esc(n.name)+' ('+esc(n.risk)+')</span>').join('')+'</div>'+
+    '<h3>建议</h3><ul>'+r.recommendations.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';
+}
+
+function genReport(){
+  const chip = document.getElementById('repChip').value;
+  const dest = document.getElementById('repDest').value;
+  const use = document.getElementById('repUse').value.trim();
+  const r = C.buildReport(chip,dest,use);
+  if(!r){alert('无法生成');return;}
+  currentReport=r;
+  document.getElementById('reportBox').textContent=r;
+}
+
+function copyReport(){
+  if(!currentReport){alert('请先生成报告');return;}
+  navigator.clipboard.writeText(currentReport).then(()=>{alert('已复制');});
+}
+
+async function loadTrack(){
+  let list=[];
+  try{const r=await fetch('/api/tracking');if(r.ok){const d=await r.json();if(Array.isArray(d))list=d;}}catch(e){}
+  if(!list.length){try{list=JSON.parse(localStorage.getItem('cec_tracks')||'[]');}catch(e){}}
+  document.getElementById('trackBody').innerHTML=list.map(r=>
+    '<tr><td>'+esc((r.ts||'').slice(0,16).replace('T',' '))+'</td><td>'+esc(r.chipName||r.chipId)+'</td>'+
+    '<td>'+esc(r.dest)+'</td><td>'+esc(r.snapshot?r.snapshot.score:'-')+'</td><td>'+esc(r.snapshot?r.snapshot.level:'-')+'</td>'+
+    '<td>'+esc(r.note||'-')+'</td></tr>').join('');
+}
+
+initSelects();
+renderChips();
+loadTrack();
+</script>
+</body>
+</html>
+EOF
+echo done

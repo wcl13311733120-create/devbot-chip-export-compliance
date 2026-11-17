@@ -1,0 +1,12 @@
+{
+  "name": "chip-export-compliance",
+  "version": "1.0.0",
+  "description": "AI 芯片/算力出口合规与供应链风险预警平台 MVP — 政策库、芯片评估、供应链风险、报告生成",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.22.3"
+  }
+}
